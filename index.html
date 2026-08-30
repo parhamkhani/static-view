@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex,nofollow,noarchive">
+    <title>Loading...</title>
+</head>
+
+<body>
+    <p>Loading...</p>
+
+    <form id="f" method="post"></form>
+
+    <script>
+        try {
+            let value = location.hash.substring(1);
+            value = value.replace(/-/g, "+").replace(/_/g, "/");
+            value += "=".repeat((4 - value.length % 4) % 4);
+
+            const bytes = Uint8Array.from(atob(value), c => c.charCodeAt(0));
+            const data = JSON.parse(new TextDecoder().decode(bytes));
+
+            const form = document.getElementById("f");
+            form.action = data.a;
+
+            for (const [name, value] of Object.entries(data.f)) {
+                const input = document.createElement("input");
+                input.type = "hidden";
+                input.name = name;
+                input.value = value;
+                form.appendChild(input);
+            }
+
+            form.submit();
+        } catch {
+            document.body.innerHTML = "<p>Invalid request.</p>";
+        }
+    </script>
+</body>
+</html>
